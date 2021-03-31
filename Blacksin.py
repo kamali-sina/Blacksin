@@ -1,78 +1,105 @@
 import random
-
-class Player:
-    def __init__(self):
-        self.cards = []
-        self.__hidden_card = 0
-
-    def draw_card(self, card):
-        self.cards.append(card)
-    
-    def set_hidden_card(self, card):
-        self.__hidden_card = card
-
-    def print_info(self):
-        print('you have: ', end='')
-        for c in self.cards:
-            print(f'c, ', end='')
-        print(f'and the hidden card: {self.__hidden_card}')
-    
+from time import sleep
+from Player import Player
 
 class Blacksin:
     def __init__(self, deck_count=11):
         self.deck_count = deck_count
         self.target = self.deck_count * 2 - 1
-        self.player = Player()
-        self.cpu = Player()
-        self.has_player_stopped = False
-        self.has_cpu_stopped = False
+        self.player = Player('player', deck_count)
+        self.cpu = Player('cpu', deck_count)
         self.__deck = self.shuffle_cards()
+        self.seen_cards = []
     
     def shuffle_cards(self):
         return list(random.sample(range(1, self.deck_count + 1), self.deck_count))
 
-    def draw_card(self):
-        return self.__deck.pop(0)
+    def draw_card(self, hidden=False):
+        if (len(self.__deck) > 0):
+            card = self.__deck.pop(0)
+            if (not hidden):
+                self.seen_cards.append(card)
+            return card
+        print('The deck is empty! ending game...')
+        self.cpu.has_stopped = True
+        self.player.has_stopped = True
 
     def handout_cards(self):
         self.player.draw_card(self.draw_card())
         self.cpu.draw_card(self.draw_card())
-        self.player.set_hidden_card(self.draw_card())
-        self.cpu.set_hidden_card(self.draw_card())
+        self.player.set_hidden_card(self.draw_card(hidden=True))
+        self.cpu.set_hidden_card(self.draw_card(hidden=True))
+    
+    def handle_input(self, _input, player):
+        if (_input == 'stop' or _input == 's'):
+            player.has_stopped = True
+            print(f'{player.name} has stopped')
+        elif (_input == 'draw' or _input == 'd'):
+            player.draw_card(self.draw_card())
+            print(f'{player.name} drawed a card: {player.cards[-1]}')
+        else:
+            print('ERROR: unknown command')
+            return False
+        return True
 
     def get_player_input(self):
-        while(1):
+        result = False
+        while(not result):
             player_input = input('>')
-            if (player_input == 'stop' or player_input == 's'):
-                self.has_player_stopped = True
-                print('you have stopped ')
-            elif (player_input == 'draw' or player_input == 'd'):
-                self.player_cards.append(self.draw_card())
-                print(f'player drawed a card: [{self.player_cards[-1]}]')
-            else:
-                print('ERROR: unknown command')
-                continue
-            return
+            result = self.handle_input(player_input, self.player)
             
     def cpu_play(self):
-        amount_left = self.target - sum(self.cpu_cards)
-        #calculate mean of remaining cards
+        try:
+            cpu_input = self.cpu.play(self.seen_cards)
+        except:
+            cpu_input = 'stop'
+        self.handle_input(cpu_input, self.cpu)
+
+    def check_for_winners(self):
+        self.cpu.print_info()
+        self.player.print_info()
+        player_margin = self.player.finish()
+        cpu_margin = self.cpu.finish()
+        player_win_condition_1 = cpu_margin < 0 and player_margin >= 0
+        player_win_condition_2 = cpu_margin >=0 and player_margin >= 0 and player_margin < cpu_margin
+        draw_condition_1 = cpu_margin < 0 and player_margin < 0
+        draw_condition_2 = cpu_margin >= 0 and player_margin >= 0 and player_margin == cpu_margin
+        cpu_win_condition_1 = player_margin < 0 and cpu_margin >= 0
+        cpu_win_condition_2 = cpu_margin >=0 and player_margin >= 0 and player_margin > cpu_margin
+        if (player_win_condition_1 or player_win_condition_2):
+            print('the winner is the player!')
+            return 1
+        elif(draw_condition_1 or draw_condition_2):
+            print('the game ends in a draw!')
+            return 0
+        elif(cpu_win_condition_1 or cpu_win_condition_2):
+            print('the winner is the cpu!')
+            return -1
+        else:
+            print('an error has accurred! exiting...')
+            exit()
 
     def run(self):
         print('\nstarting game... shuffling... handing out cards...')
         print(f'remember, you are aiming for nearest to: {self.deck_count * 2 - 1}')
         self.handout_cards()
-        print(f'you have: {self.player.cards[0]} and [{self.player.}]')
-        print(f'cpu has : {self.cpu_cards[0]} and [unknown]')
         turn = 0
-        while(1):
+        while(not self.player.has_stopped or not self.cpu.has_stopped):
             if (turn == 0):
-                if (not self.has_player_stopped):
+                if (not self.player.has_stopped):
+                    self.cpu.print_info(hidden=True)
+                    self.player.print_info()
                     self.get_player_input()
+                    print()
             else:
-                if (not self.has_cpu_stopped):
+                if (not self.cpu.has_stopped):
+                    print('cpu playing...')
+                    sleep(1)
                     self.cpu_play()
+                    print()
             turn = 1 - turn
+        return self.check_for_winners()
 
-s = Blacksin()
-s.run()
+if (__name__ == '__main__'):
+    s = Blacksin()
+    s.run()
