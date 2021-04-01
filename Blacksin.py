@@ -23,6 +23,7 @@ class Blacksin:
         print('The deck is empty! ending game...')
         self.cpu.has_stopped = True
         self.player.has_stopped = True
+        return -1
 
     def handout_cards(self):
         self.player.draw_card(self.draw_card())
@@ -35,8 +36,17 @@ class Blacksin:
             player.has_stopped = True
             print(f'{player.name} has stopped')
         elif (_input == 'draw' or _input == 'd'):
-            player.draw_card(self.draw_card())
-            print(f'{player.name} drawed a card: {player.cards[-1]}')
+            card = self.draw_card()
+            if (card == -1): return True
+            player.draw_card(card)
+            print(f'{player.name} drawed a card: {card}')
+        elif (_input == 'erase_self' or _input == 'es'):
+            player.erase(player)
+        elif (_input == 'erase_opponent' or _input == 'eo'):
+            if (player is self.player):
+                player.erase(self.cpu)
+            else:
+                player.erase(self.player)
         else:
             print('ERROR: unknown command')
             return False
@@ -45,7 +55,7 @@ class Blacksin:
     def get_player_input(self):
         result = False
         while(not result):
-            player_input = input('>')
+            player_input = input('>').strip().lower()
             result = self.handle_input(player_input, self.player)
             
     def cpu_play(self):
@@ -85,6 +95,8 @@ class Blacksin:
         self.handout_cards()
         turn = 0
         while(not self.player.has_stopped or not self.cpu.has_stopped):
+            self.player.has_stopped = False
+            self.cpu.has_stopped = False
             if (turn == 0):
                 if (not self.player.has_stopped):
                     self.cpu.print_info(hidden=True)
@@ -98,6 +110,8 @@ class Blacksin:
                     self.cpu_play()
                     print()
             turn = 1 - turn
+        print('\nand the winner is...')
+        sleep(1)
         return self.check_for_winners()
 
 if (__name__ == '__main__'):
