@@ -32,6 +32,10 @@ class Blacksin:
         self.cpu.set_hidden_card(self.draw_card(hidden=True))
     
     def handle_input(self, _input, player):
+        if (player is self.player):
+            opponent = self.cpu
+        else:
+            opponent = self.player
         if (_input == 'stop' or _input == 's'):
             player.has_stopped = True
             print(f'{player.name} has stopped')
@@ -40,13 +44,13 @@ class Blacksin:
             if (card == -1): return True
             player.draw_card(card)
             print(f'{player.name} drawed a card: {card}')
+            opponent.has_stopped = False
         elif (_input == 'erase_self' or _input == 'es'):
             player.erase(player)
+            opponent.has_stopped = False
         elif (_input == 'erase_opponent' or _input == 'eo'):
-            if (player is self.player):
-                player.erase(self.cpu)
-            else:
-                player.erase(self.player)
+            player.erase(opponent)
+            opponent.has_stopped = False
         else:
             print('ERROR: unknown command')
             return False
@@ -95,8 +99,6 @@ class Blacksin:
         self.handout_cards()
         turn = 0
         while(not self.player.has_stopped or not self.cpu.has_stopped):
-            self.player.has_stopped = False
-            self.cpu.has_stopped = False
             if (turn == 0):
                 if (not self.player.has_stopped):
                     self.cpu.print_info(hidden=True)
