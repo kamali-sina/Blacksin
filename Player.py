@@ -4,6 +4,7 @@ class Player:
         self.deck_count = num_of_cards
         self.target = self.deck_count * 2 - 1
         self.cards = []
+        self.erases_remaining = self.deck_count // 3
         self.has_stopped = False
         self.__hidden_card = 0
 
@@ -37,5 +38,20 @@ class Player:
         mean_of_remaining_cards = self.calculate_mean(seen_cards)
         if (amount_to_target >= mean_of_remaining_cards - 1):
             return 'draw'
+        elif(amount_to_target < 0 and self.erases_remaining > 0):
+            return 'erase_self'
+        elif(self.erases_remaining > 0):
+            return 'erase_opponent'
         else:
             return 'stop'
+    
+    def erase(self, target):
+        if (len(target.cards) == 0):
+            print(f'{target.name} has no more eraseble cards!')
+            return
+        if (self.erases_remaining > 0):
+            self.erases_remaining -= 1
+            card = target.cards.pop(-1)
+            print(f'{self.name} erased {card} from {target.name}\'s deck!')
+            return
+        print(f'{self.name} has no more erases remaining!')
