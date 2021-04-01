@@ -40,7 +40,7 @@ class Player:
             return 'draw'
         elif(amount_to_target < 0 and self.erases_remaining > 0):
             return 'erase_self'
-        elif(self.erases_remaining > 0):
+        elif(self.erases_remaining > 0 and self.amount_to_target > 2):
             return 'erase_opponent'
         else:
             return 'stop'
