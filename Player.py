@@ -33,14 +33,14 @@ class Player:
         mean_of_remaining_cards = sum_of_remaining_cards / (self.deck_count - num_of_seen_cards)
         return mean_of_remaining_cards
     
-    def play(self, seen_cards):
+    def play(self, seen_cards, expert_mode):
         amount_to_target = self.target - sum(self.cards) - self.__hidden_card
         mean_of_remaining_cards = self.calculate_mean(seen_cards)
         if (amount_to_target >= mean_of_remaining_cards - 1):
             return 'draw'
-        elif(amount_to_target < 0 and self.erases_remaining > 0):
+        elif(amount_to_target < 0 and self.erases_remaining > 0 and expert_mode):
             return 'erase_self'
-        elif(self.erases_remaining > 0 and self.amount_to_target > 2):
+        elif(self.erases_remaining > 0 and self.amount_to_target > 2 and expert_mode):
             return 'erase_opponent'
         else:
             return 'stop'
