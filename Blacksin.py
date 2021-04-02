@@ -3,8 +3,9 @@ from time import sleep
 from Player import Player
 
 class Blacksin:
-    def __init__(self, deck_count=11):
+    def __init__(self, expert_mode=False, deck_count=11):
         self.deck_count = deck_count
+        self.expert_mode = expert_mode
         self.target = self.deck_count * 2 - 1
         self.player = Player('player', deck_count)
         self.cpu = Player('cpu', deck_count)
@@ -44,13 +45,16 @@ class Blacksin:
             if (card == -1): return True
             player.draw_card(card)
             print(f'{player.name} drawed a card: {card}')
-            opponent.has_stopped = False
-        elif (_input == 'erase_self' or _input == 'es'):
+            if (self.expert_mode):
+                opponent.has_stopped = False
+        elif ((_input == 'erase_self' or _input == 'es') and self.expert_mode):
             player.erase(player)
-            opponent.has_stopped = False
-        elif (_input == 'erase_opponent' or _input == 'eo'):
+            if (self.expert_mode):
+                opponent.has_stopped = False
+        elif ((_input == 'erase_opponent' or _input == 'eo') and self.expert_mode):
             player.erase(opponent)
-            opponent.has_stopped = False
+            if (self.expert_mode):
+                opponent.has_stopped = False
         else:
             print('ERROR: unknown command')
             return False
@@ -64,7 +68,7 @@ class Blacksin:
             
     def cpu_play(self):
         try:
-            cpu_input = self.cpu.play(self.seen_cards)
+            cpu_input = self.cpu.play(self.seen_cards, self.expert_mode)
         except:
             cpu_input = 'stop'
         self.handle_input(cpu_input, self.cpu)
@@ -117,5 +121,5 @@ class Blacksin:
         return self.check_for_winners()
 
 if (__name__ == '__main__'):
-    s = Blacksin()
+    s = Blacksin(expert_mode=False)
     s.run()
