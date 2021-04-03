@@ -1,5 +1,7 @@
 import random
 from time import sleep
+
+from Agent import move
 from Player import Player
 
 class Blacksin:
@@ -61,10 +63,9 @@ class Blacksin:
         return True
 
     def get_player_input(self):
-        result = False
-        while(not result):
-            player_input = input('>').strip().lower()
-            result = self.handle_input(player_input, self.player)
+        player_input = move(self.deck_count, set(self.cpu.get_player_cards()), set(self.player.get_player_cards(True))).lower()
+        result = self.handle_input(player_input, self.player)
+        return result
             
     def cpu_play(self):
         try:

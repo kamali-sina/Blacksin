@@ -55,3 +55,9 @@ class Player:
             print(f'{self.name} erased {card} from {target.name}\'s deck!')
             return
         print(f'{self.name} has no more erases remaining!')
+
+    def get_player_cards(self, hidden= False):
+        if hidden:
+            return self.cards + [self.__hidden_card]
+        else:
+            return self.cards
