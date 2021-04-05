@@ -1,5 +1,4 @@
-go_beyond_target_score = 21
-
+import math
 
 class GameState:
     def __init__(self,deck_count ,cpu_cards,player_cards,is_player_turn, player_has_stoped,action,depth):
@@ -21,8 +20,14 @@ class GameState:
 
     def eval_score(self):
         player_score = sum(self.player_cards)
-        expected_cpu_hidden_card = sum(self.remained_cards)/len(self.remained_cards)
+        expected_cpu_hidden_card = math.ceil(sum(self.remained_cards)/len(self.remained_cards))
         cpu_score = sum(self.cpu_cards) + expected_cpu_hidden_card
+        if self.action == 'C':
+            if self.player_turn:
+                player_score += expected_cpu_hidden_card
+            else:
+                cpu_score += expected_cpu_hidden_card
+
         if player_score > self.target:
             self.score = -self.target
         elif cpu_score > self.target:

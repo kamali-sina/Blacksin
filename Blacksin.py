@@ -5,7 +5,7 @@ from Agent import move
 from Player import Player
 
 class Blacksin:
-    def __init__(self, expert_mode=False, deck_count=11):
+    def __init__(self, expert_mode=False, deck_count=11, tree_height = 4):
         self.deck_count = deck_count
         self.expert_mode = expert_mode
         self.target = self.deck_count * 2 - 1
@@ -13,6 +13,7 @@ class Blacksin:
         self.cpu = Player('cpu', deck_count)
         self.__deck = self.shuffle_cards()
         self.seen_cards = []
+        self.tree_height = tree_height
     
     def shuffle_cards(self):
         return list(random.sample(range(1, self.deck_count + 1), self.deck_count))
@@ -63,7 +64,7 @@ class Blacksin:
         return True
 
     def get_player_input(self):
-        player_input = move(self.deck_count, set(self.cpu.get_player_cards()), set(self.player.get_player_cards(True))).lower()
+        player_input = move(self.deck_count, set(self.cpu.get_player_cards()), set(self.player.get_player_cards(True)),self.tree_height).lower()
         result = self.handle_input(player_input, self.player)
         return result
             
@@ -113,12 +114,12 @@ class Blacksin:
             else:
                 if (not self.cpu.has_stopped):
                     print('cpu playing...')
-                    sleep(1)
+                    # sleep(1)
                     self.cpu_play()
                     print()
             turn = 1 - turn
         print('\nand the winner is...')
-        sleep(1)
+        # sleep(1)
         return self.check_for_winners()
 
 if (__name__ == '__main__'):

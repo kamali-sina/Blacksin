@@ -24,9 +24,12 @@ class GameTree:
         return node
 
     def search_tree(self):
-        self.Expectiminimax(self.root,0,True,None)
-        decision =  self.root.get_best_decision()
-        return decision
+        try:
+            self.Expectiminimax(self.root,0,True,None)
+            decision =  self.root.get_best_decision()
+            return decision
+        except:
+            print("error")
 
     def Expectiminimax(self,node,depth,isRoot,action):
         #stoping the recursive calls condition
@@ -34,6 +37,9 @@ class GameTree:
             return node.get_score()
         #<=1 because cpu also has 1 hidden card. this condition is for when the cards are finished.
         if node.get_num_of_remained_cards() <=1:
+            if isRoot:
+                node.set_best_decision(self.make_node('S',depth+1,node.get_cpu_cards(),
+                                              node.get_player_cards(),node.is_player_turn(),True))
             return node.get_score()
         if (node.player_has_stopped() and (node.is_player_turn()) and (action == 'S')):
             return node.get_score()
@@ -44,11 +50,11 @@ class GameTree:
             for card in node.get_remained_cards():
                 if node.is_player_turn():
                     new_node = self.make_node('D',depth+1,node.get_cpu_cards(),
-                                              node.get_player_cards()| {card},node.is_player_turn(),False)
+                                              node.get_player_cards()| {card},not node.is_player_turn(),False)
                     node.set_child(new_node)
                 else:
                     new_node = self.make_node('D', depth + 1, node.get_cpu_cards()|{card},
-                                              node.get_player_cards(), node.is_player_turn(), False)
+                                              node.get_player_cards(), not node.is_player_turn(), False)
                     node.set_child(new_node)
         else:
             stop = self.make_node('S',depth+1,node.get_cpu_cards(),

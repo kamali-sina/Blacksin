@@ -36,7 +36,7 @@ class Player:
     def play(self, seen_cards, expert_mode):
         amount_to_target = self.target - sum(self.cards) - self.__hidden_card
         mean_of_remaining_cards = self.calculate_mean(seen_cards)
-        if (amount_to_target >= mean_of_remaining_cards - 1):
+        if (amount_to_target >= mean_of_remaining_cards -1):
             return 'draw'
         elif(amount_to_target < 0 and self.erases_remaining > 0 and expert_mode):
             return 'erase_self'
