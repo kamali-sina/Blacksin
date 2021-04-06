@@ -48,16 +48,10 @@ class Blacksin:
             if (card == -1): return True
             player.draw_card(card)
             print(f'{player.name} drawed a card: {card}')
-            if (self.expert_mode):
-                opponent.has_stopped = False
         elif ((_input == 'erase_self' or _input == 'es') and self.expert_mode):
             player.erase(player)
-            if (self.expert_mode):
-                opponent.has_stopped = False
         elif ((_input == 'erase_opponent' or _input == 'eo') and self.expert_mode):
             player.erase(opponent)
-            if (self.expert_mode):
-                opponent.has_stopped = False
         else:
             print('ERROR: unknown command')
             return False
@@ -123,5 +117,5 @@ class Blacksin:
         return self.check_for_winners()
 
 if (__name__ == '__main__'):
-    s = Blacksin(expert_mode=False)
+    s = Blacksin(expert_mode=True)
     s.run()
