@@ -59,7 +59,7 @@ class GameTree:
             if node.is_player_turn() and not node.player_has_stopped() and node.get_remained_erases() >=1:
                 if len(node.get_player_cards())>1:
                     erase_self = self.make_node('es',depth+1,node.get_cpu_cards(),
-                                          node.get_player_cards()[:-1],not node.is_player_turn(),False,node.get_remained_erases()-1)
+                                          node.get_player_cards()[:-2] + [node.get_player_cards()[-1]],not node.is_player_turn(),False,node.get_remained_erases()-1)
                     node.set_child(erase_self)
                 if len(node.get_cpu_cards())>=1:
                     erase_cpu = self.make_node('eo', depth + 1, node.get_cpu_cards()[:-1],
