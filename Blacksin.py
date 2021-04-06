@@ -5,7 +5,7 @@ from Agent import move
 from Player import Player
 
 class Blacksin:
-    def __init__(self, expert_mode=False, deck_count=11, tree_height = 4):
+    def __init__(self, expert_mode=False, deck_count=11, tree_height = 3):
         self.deck_count = deck_count
         self.expert_mode = expert_mode
         self.target = self.deck_count * 2 - 1
@@ -58,7 +58,7 @@ class Blacksin:
         return True
 
     def get_player_input(self):
-        player_input = move(self.deck_count, set(self.cpu.get_player_cards()), set(self.player.get_player_cards(True)),self.tree_height).lower()
+        player_input = move(self.deck_count, self.cpu.get_player_cards(), self.player.get_player_cards(True),self.tree_height,self.player.get_erases_remained()).lower()
         result = self.handle_input(player_input, self.player)
         return result
             
@@ -97,7 +97,7 @@ class Blacksin:
         print('\nstarting game... shuffling... handing out cards...')
         print(f'remember, you are aiming for nearest to: {self.deck_count * 2 - 1}')
         self.handout_cards()
-        turn = 0
+        turn = 1
         while(not self.player.has_stopped or not self.cpu.has_stopped):
             if (turn == 0):
                 if (not self.player.has_stopped):
@@ -117,5 +117,5 @@ class Blacksin:
         return self.check_for_winners()
 
 if (__name__ == '__main__'):
-    s = Blacksin(expert_mode=True)
+    s = Blacksin(expert_mode=True, deck_count=7, tree_height=4)
     s.run()

@@ -61,3 +61,6 @@ class Player:
             return self.cards + [self.__hidden_card]
         else:
             return self.cards
+
+    def get_erases_remained(self):
+        return self.erases_remaining

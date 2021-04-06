@@ -1,15 +1,16 @@
 import math
 
 class GameState:
-    def __init__(self,deck_count ,cpu_cards,player_cards,is_player_turn, player_has_stoped,action,depth):
+    def __init__(self,deck_count ,cpu_cards,player_cards,is_player_turn, player_has_stoped,action,depth,remained_erases):
         self.deck_count = deck_count
         self.target = self.deck_count * 2 - 1
         self.cpu_cards = cpu_cards
         self.player_cards = player_cards
-        self.remained_cards = set(range(1,self.deck_count+1)) - cpu_cards - player_cards
+        self.remained_cards = list(set(range(1,self.deck_count+1)) - set(cpu_cards) - set(player_cards))
         self.player_turn = is_player_turn
         self.player_has_stoped = player_has_stoped
         self.action = action
+        self.remained_erases = remained_erases
         self.depth = depth
         self.children = []
         self.score = None
@@ -29,9 +30,9 @@ class GameState:
                 cpu_score += expected_cpu_hidden_card
 
         if player_score > self.target:
-            self.score = -self.target
+            self.score = -2*self.target
         elif cpu_score > self.target:
-            self.score = self.target
+            self.score = 2*self.target
         else:
             self.score = player_score - cpu_score
 
@@ -72,3 +73,6 @@ class GameState:
 
     def get_player_stopped(self):
         return self.player_has_stoped
+
+    def get_remained_erases(self):
+        return self.remained_erases
