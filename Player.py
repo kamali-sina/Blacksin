@@ -4,7 +4,7 @@ class Player:
         self.deck_count = num_of_cards
         self.target = self.deck_count * 2 - 1
         self.cards = []
-        self.erases_remaining = self.deck_count // 3
+        self.erases_remaining = self.deck_count // 5
         self.has_stopped = False
         self.__hidden_card = 0
 
@@ -38,12 +38,12 @@ class Player:
         mean_of_remaining_cards = self.calculate_mean(seen_cards)
         if (amount_to_target >= mean_of_remaining_cards -1):
             return 'draw'
-        elif(amount_to_target < 0 and self.erases_remaining > 0 and expert_mode):
-            return 'erase_self'
-        elif(self.erases_remaining > 0 and self.amount_to_target > 2 and expert_mode):
-            return 'erase_opponent'
         else:
             return 'stop'
+        # elif(amount_to_target < 0 and self.erases_remaining > 0 and expert_mode):
+        #     return 'erase_self'
+        # elif(self.erases_remaining > 0 and self.amount_to_target > 2 and expert_mode):
+        #     return 'erase_opponent'
     
     def erase(self, target):
         if (len(target.cards) == 0):
