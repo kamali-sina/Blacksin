@@ -97,7 +97,7 @@ class Blacksin:
         print('\nstarting game... shuffling... handing out cards...')
         print(f'remember, you are aiming for nearest to: {self.deck_count * 2 - 1}')
         self.handout_cards()
-        turn = 1
+        turn = 0
         while(not self.player.has_stopped or not self.cpu.has_stopped):
             if (turn == 0):
                 if (not self.player.has_stopped):

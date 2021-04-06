@@ -30,11 +30,11 @@ class GameState:
                 cpu_score += expected_cpu_hidden_card
 
         if player_score > self.target:
-            self.score = -2*self.target
+            self.score = -10*self.target
         elif cpu_score > self.target:
-            self.score = 2*self.target
+            self.score = 10*self.target
         else:
-            self.score = player_score - cpu_score
+            self.score = 9*(player_score - cpu_score) + 1*(self.target - player_score)
 
     def get_score(self):
         if not self.score:
