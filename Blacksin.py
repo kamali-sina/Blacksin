@@ -121,5 +121,5 @@ class Blacksin:
         return self.check_for_winners()
 
 if (__name__ == '__main__'):
-    s = Blacksin(expert_mode=False)
+    s = Blacksin(expert_mode=False, deck_count=7)
     s.run()
