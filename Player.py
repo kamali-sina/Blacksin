@@ -6,44 +6,52 @@ class Player:
         self.cards = []
         self.erases_remaining = self.deck_count // 5
         self.has_stopped = False
-        self.__hidden_card = 0
 
     def draw_card(self, card):
         self.cards.append(card)
-    
-    def set_hidden_card(self, card):
-        self.__hidden_card = card
 
-    def print_info(self, hidden=False):
+    def print_info(self):
         print(f"{self.name}'s cards: ", end='')
         for c in self.cards:
             print(f'{c}, ', end='')
-        if (hidden):
-            print(f'[hidden] sum: {sum(self.cards)} + ?')
-        else:
-            print(f'[{self.__hidden_card}] sum: {sum(self.cards) + self.__hidden_card}')
+        print(f'sum: {sum(self.cards)}')
     
     def finish(self):
-        return self.target - sum(self.cards) - self.__hidden_card
+        return self.target - sum(self.cards)
     
     def calculate_mean(self, seen_cards):
-        sum_of_seen_cards = sum(seen_cards) + self.__hidden_card
+        sum_of_seen_cards = sum(seen_cards)
         num_of_seen_cards = len(seen_cards) + 1
         sum_of_remaining_cards = ((self.deck_count * (self.deck_count + 1))/2) - sum_of_seen_cards
         mean_of_remaining_cards = sum_of_remaining_cards / (self.deck_count - num_of_seen_cards)
         return mean_of_remaining_cards
     
-    def play(self, seen_cards, expert_mode):
-        amount_to_target = self.target - sum(self.cards) - self.__hidden_card
-        mean_of_remaining_cards = self.calculate_mean(seen_cards)
-        if (amount_to_target >= mean_of_remaining_cards -1):
+    def play(self, seen_cards, expert_mode, deck, enemies_cards):
+        amount_to_target = self.target - sum(self.cards)
+        amount_with_next_card = self.target - (sum(self.cards) + deck[0])
+        enemies_amount_to_target = self.target - sum(enemies_cards)
+        enemies_amount_with_next_card = self.target - (sum(enemies_cards) + deck[1])
+        _stop_condition = amount_to_target < deck[0] and self.erases_remaining <= 0
+        _draw_condition_1 = amount_with_next_card <= enemies_amount_with_next_card
+        _draw_condition_2 = amount_with_next_card >= 0
+        _erase_condition = self.erases_remaining > 0 and expert_mode
+        _erase_self_condition = amount_with_next_card < 0
+        _erase_opponent_condition_or = enemies_amount_to_target < (self.target //7)
+        _erase_opponent_condition_or_2 = enemies_amount_with_next_card < (self.target // 7) 
+        _erase_opponent_condition_or_3 = enemies_amount_with_next_card <= amount_with_next_card
+        _erase_opponent_condition_or_4 = enemies_amount_to_target <= amount_to_target
+        _erase_opponent_condition = _erase_opponent_condition_or or _erase_opponent_condition_or_2 or _erase_opponent_condition_or_3
+        _erase_opponent_condition = _erase_opponent_condition or _erase_opponent_condition_or_4 
+        if (_stop_condition): 
+            return 'stop'
+        elif (_draw_condition_1 and _draw_condition_2):
             return 'draw'
+        elif(_erase_self_condition and _erase_condition):
+            return 'erase_self'
+        elif(_erase_opponent_condition and _erase_condition):
+            return 'erase_opponent'
         else:
             return 'stop'
-        # elif(amount_to_target < 0 and self.erases_remaining > 0 and expert_mode):
-        #     return 'erase_self'
-        # elif(self.erases_remaining > 0 and self.amount_to_target > 2 and expert_mode):
-        #     return 'erase_opponent'
     
     def erase(self, target):
         if (len(target.cards) == 0):
@@ -57,10 +65,7 @@ class Player:
         print(f'{self.name} has no more erases remaining!')
 
     def get_player_cards(self, hidden= False):
-        if hidden:
-            return self.cards + [self.__hidden_card]
-        else:
-            return self.cards
+        self.cards
 
     def get_erases_remained(self):
         return self.erases_remaining
