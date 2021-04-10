@@ -11,7 +11,7 @@ class Blacksin:
         self.target = self.deck_count * 2 - 1
         self.player = Player('player', deck_count)
         self.cpu = Player('cpu', deck_count)
-        self.__deck = self.shuffle_cards()
+        self.deck = self.shuffle_cards()
         self.seen_cards = []
         self.tree_height = tree_height
     
@@ -19,8 +19,8 @@ class Blacksin:
         return list(random.sample(range(1, self.deck_count + 1), self.deck_count))
 
     def draw_card(self, hidden=False):
-        if (len(self.__deck) > 0):
-            card = self.__deck.pop(0)
+        if (len(self.deck) > 0):
+            card = self.deck.pop(0)
             if (not hidden):
                 self.seen_cards.append(card)
             return card
@@ -32,8 +32,8 @@ class Blacksin:
     def handout_cards(self):
         self.player.draw_card(self.draw_card())
         self.cpu.draw_card(self.draw_card())
-        self.player.set_hidden_card(self.draw_card(hidden=True))
-        self.cpu.set_hidden_card(self.draw_card(hidden=True))
+        self.player.draw_card(self.draw_card())
+        self.cpu.draw_card(self.draw_card())
     
     def handle_input(self, _input, player):
         if (player is self.player):
@@ -58,13 +58,18 @@ class Blacksin:
         return True
 
     def get_player_input(self):
-        player_input = move(self.deck_count, self.cpu.get_player_cards(), self.player.get_player_cards(True),self.tree_height,self.player.get_erases_remained()).lower()
-        result = self.handle_input(player_input, self.player)
-        return result
+        #TODO: uncomment this!
+        # player_input = move(self.deck_count, self.cpu.get_player_cards(), self.player.get_player_cards(True),self.tree_height,self.player.get_erases_remained()).lower()
+        # result = self.handle_input(player_input, self.player)
+        # return result
+        player_input = input('> ').strip().lower()
+        res = self.handle_input(player_input, self.player)
+        return res
+
             
     def cpu_play(self):
         try:
-            cpu_input = self.cpu.play(self.seen_cards, self.expert_mode)
+            cpu_input = self.cpu.play(self.seen_cards, self.expert_mode, self.deck, self.player.cards)
         except:
             cpu_input = 'stop'
         self.handle_input(cpu_input, self.cpu)
@@ -93,15 +98,22 @@ class Blacksin:
             print('an error has accurred! exiting...')
             exit()
 
+    def print_deck(self):
+        print('full deck: [top] ', end='')
+        for i in self.deck:
+            print(i, end=' ')
+        print('[bottom]')
+
     def run(self):
         print('\nstarting game... shuffling... handing out cards...')
         print(f'remember, you are aiming for nearest to: {self.deck_count * 2 - 1}')
+        self.print_deck()
         self.handout_cards()
         turn = 0
         while(not self.player.has_stopped or not self.cpu.has_stopped):
             if (turn == 0):
                 if (not self.player.has_stopped):
-                    self.cpu.print_info(hidden=True)
+                    self.cpu.print_info()
                     self.player.print_info()
                     self.get_player_input()
                     print()
