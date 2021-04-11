@@ -1,16 +1,18 @@
 import math
 
 class GameState:
-    def __init__(self,deck_count ,cpu_cards,player_cards,is_player_turn, player_has_stoped,action,depth,remained_erases):
+    def __init__(self,deck_count ,cpu_cards,player_cards,is_player_turn, player_has_stoped,action,depth,remained_erases,opponent_remaied_erases, deck, cpu_has_stopped):
         self.deck_count = deck_count
         self.target = self.deck_count * 2 - 1
         self.cpu_cards = cpu_cards
         self.player_cards = player_cards
-        self.remained_cards = list(set(range(1,self.deck_count+1)) - set(cpu_cards) - set(player_cards))
+        self.remained_cards = deck
         self.player_turn = is_player_turn
         self.player_has_stoped = player_has_stoped
+        self.cpu_has_stopped = cpu_has_stopped
         self.action = action
         self.remained_erases = remained_erases
+        self.opponent_remaied_erases = opponent_remaied_erases
         self.depth = depth
         self.children = []
         self.score = None
@@ -21,20 +23,16 @@ class GameState:
 
     def eval_score(self):
         player_score = sum(self.player_cards)
-        expected_cpu_hidden_card = math.ceil(sum(self.remained_cards)/len(self.remained_cards))
-        cpu_score = sum(self.cpu_cards) + expected_cpu_hidden_card
-        if self.action == 'C':
-            if self.player_turn:
-                player_score += expected_cpu_hidden_card
-            else:
-                cpu_score += expected_cpu_hidden_card
+        # expected_cpu_hidden_card = math.ceil(sum(self.remained_cards)/len(self.remained_cards))
+        cpu_score = sum(self.cpu_cards)
 
         if player_score > self.target:
-            self.score = -10*self.target
+            self.score = -3*self.target
         elif cpu_score > self.target:
-            self.score = 10*self.target
+            self.score = 3*self.target
         else:
-            self.score = 9*(player_score - cpu_score) + 1*(self.target - player_score)
+            self.score = 2*(player_score - cpu_score)
+                         # + 1*(self.target - player_score)
 
     def get_score(self):
         if not self.score:
@@ -76,3 +74,11 @@ class GameState:
 
     def get_remained_erases(self):
         return self.remained_erases
+    def get_opponent_remained_erases(self):
+        return self.opponent_remaied_erases
+
+    def player_has_erase_left(self):
+        return self.remained_erases>0
+
+    def opponent_has_erase_left(self):
+        return self.opponent_remaied_erases>0

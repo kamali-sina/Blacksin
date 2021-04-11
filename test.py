@@ -2,8 +2,8 @@ from Blacksin import Blacksin
 import csv
 
 def test():
-    for deck_count in [31,41]:
-        for tree_height in range(1,6):
+    for deck_count in [7,11,21,31,41]:
+        for tree_height in range(1,4):
             draws = 0
             agent_wins = 0
             for i in range(500):
@@ -16,7 +16,7 @@ def test():
             agent_wins = agent_wins/500
             draws = draws/500
             fields = [deck_count,tree_height,draws,agent_wins,1]
-            with open("result2.csv", 'a') as f:
+            with open("without_pruning.csv", 'a') as f:
                 writer = csv.writer(f)
                 writer.writerow(fields)
             f.close()

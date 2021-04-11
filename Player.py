@@ -76,8 +76,8 @@ class Player:
             return
         print(f'{self.name} has no more erases remaining!')
 
-    def get_player_cards(self, hidden= False):
-        self.cards
+    def get_player_cards(self):
+        return self.cards
 
     def get_erases_remained(self):
         return self.erases_remaining

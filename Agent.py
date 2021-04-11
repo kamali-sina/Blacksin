@@ -1,19 +1,22 @@
 from GameTree import GameTree
 import random
 
-def move(num_of_cards,cpu_cards,player_cards, tree_height,erases_remained):
-    gameTree = GameTree(num_of_cards,cpu_cards,player_cards,tree_height,erases_remained)
+def move(num_of_cards,cpu_cards,player_cards, tree_height,erases_remained, opponent_erases_remained, deck, cpu_has_stopped):
+    gameTree = GameTree(num_of_cards,cpu_cards,player_cards,tree_height,erases_remained,opponent_erases_remained, deck, cpu_has_stopped)
     result= gameTree.search_tree()
-    if(result == 'C'):
-        return 'D'
     return result
 
-# def move(num_of_cards,cpu_cards,player_cards, tree_height):
-#     r = random.uniform(0, 1)
+# def move(num_of_cards,cpu_cards,player_cards, tree_height, erases_remained):
+#     r = random.randint(0, 4)
 #     if(r == 0):
 #         return 'D'
-#     else:
+#     elif(r== 1):
 #         return 'S'
+#     elif (r == 2):
+#         return 'es'
+#     else:
+#         return 'eo'
+
 
 
 if (__name__ == '__main__'):
