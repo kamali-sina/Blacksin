@@ -1,8 +1,8 @@
 from GameTree import GameTree
 import random
 
-def move(num_of_cards,cpu_cards,player_cards, tree_height,erases_remained, opponent_erases_remained, deck, cpu_has_stopped):
-    gameTree = GameTree(num_of_cards,cpu_cards,player_cards,tree_height,erases_remained,opponent_erases_remained, deck, cpu_has_stopped)
+def move(player,cpu,deck, tree_height):
+    gameTree = GameTree(player,cpu,deck,tree_height)
     result= gameTree.search_tree()
     return result
 

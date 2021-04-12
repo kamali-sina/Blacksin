@@ -59,8 +59,7 @@ class Blacksin:
 
     def get_player_input(self):
         #TODO: uncomment this!
-        player_input = move(self.deck_count, self.cpu.get_player_cards(), self.player.get_player_cards(),self.tree_height,self.player.get_erases_remained(),
-                            self.cpu.get_erases_remained(), self.deck, self.cpu.has_stopped).lower()
+        player_input = move(self.player,self.cpu,self.deck,self.tree_height)
         result = self.handle_input(player_input, self.player)
         return result
         # player_input = input('> ').strip().lower()

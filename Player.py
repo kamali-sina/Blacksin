@@ -39,11 +39,11 @@ class Player:
         amount_with_next_card = self.target - (sum(self.cards) + next_card_in_deck)
         enemies_amount_to_target = self.target - sum(enemies_cards)
         enemies_amount_with_next_card = self.target - (sum(enemies_cards) + next_enemy_card_in_deck)
-        print(next_card_in_deck)
+        # print(next_card_in_deck)
         _stop_condition = amount_to_target < next_card_in_deck and self.erases_remaining <= 0
         _draw_condition_1 = next_card_in_deck != 0
         _draw_condition_2 = amount_with_next_card >= 0
-        print(amount_with_next_card)
+        # print(amount_with_next_card)
         _erase_condition = self.erases_remaining > 0 and expert_mode
         _erase_self_condition = amount_to_target < 0
         _erase_opponent_condition_or = enemies_amount_to_target < (self.target //7)
